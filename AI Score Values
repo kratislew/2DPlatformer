@@ -1,0 +1,8 @@
+Reach "Goal" +50
+Reach platform closer to goal (collect coin) +10
+Fall/Game Over -10
+Else 0
+
+TODO:
+every 5s = -5
+each movement = -5 (Movement characterized by 64 bits forward, back, up-left, up-right)

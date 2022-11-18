@@ -1,0 +1,16 @@
+Movement Array
+[1, 0, 0, 0] -> right(dir.x +1) (does not consider y to allow AI to go down by walking straight and falling)
+[0, 1, 0, 0] -> left(dir.x -1) (does not consider y to allow AI to go down by walking straight and falling)
+[0, 0, 1, 0] -> up-right(dir.x +1 and dir.y -1)
+[0, 0, 0, 1] -> up-left(dir.x -1 and dir.y -1)
+
+Current State Considerations:
+Get current player collisions - left, right, bottom, top
+
+#TODO - implement functionality for non-completely random movements
+this will involve placing rect to right, left, and top of player at current position 
+to determine next movement through collisions
+
+
+
+
