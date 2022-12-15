@@ -74,10 +74,7 @@ class Player(pygame.sprite.Sprite):
         self.update_frames
         #AI movement considerations
         #[right, left, up-right, up-left]
-        #apply gravity to ai so it doesn't stack jumps and fly away...
-        #chickens can't fly.
         if not self.on_ground:
-            self.apply_gravity()
             if np.array_equal(action, [1, 0, 0, 0]):
                 self.direction.x = 1
             elif np.array_equal(action, [0, 1, 0, 0]):

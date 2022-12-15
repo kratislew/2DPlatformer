@@ -1,9 +1,0 @@
-create change in gravity when jumping on pigs
-fix pig horizontal collision
-create background
-create new levels
-update AI movement to consider downward movment (potentially)
-update AI to be able to play multiple levels
-update AI algorithm to change randomness after first token, alter AI algorithm
-update AI to have better predictive movement through test hitboxes placed ahead, behind, and on top of player
-more in-depth comments

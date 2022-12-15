@@ -1,3 +1,4 @@
+import math
 import pygame
 from tiles import Tile, StaticTile, House, AnimatedTile, Egg, Coin
 from settings import tile_size, screen_width, screen_height
@@ -37,6 +38,7 @@ class Level:
         self.player = pygame.sprite.GroupSingle()
         self.goal = pygame.sprite.GroupSingle()
         self.player_setup(player_layout)
+        self.old_distance_remaining = 0
 
         #terrain setup
         terrain_layout = import_csv_layout(level_data['terrain'])
@@ -77,7 +79,7 @@ class Level:
                     #house
                     if type == 'house':
                         sprite = House(tile_size,x,y)
-                    
+
                     #pig
                     if type == 'pig':
                         sprite = Pig(tile_size,x,y)
@@ -185,13 +187,13 @@ class Level:
     def check_death(self):
         if self.player.sprite.rect.top > screen_height:
             self.new_max_level = self.current_level
-            self.update_score(-10)
+            self.update_score(-25)
             self.set_game_over()
     
     #check win con
     def check_win(self):
         if pygame.sprite.spritecollide(self.player.sprite,self.goal,False):
-            self.update_score(50)
+            self.update_score(100)
             self.set_game_over()
 
     #AI Considerations for collecting coins (used to score for each platform to encourage generational growth)
@@ -199,7 +201,30 @@ class Level:
         collided_coins = pygame.sprite.spritecollide(self.player.sprite,self.coin_sprites,True)
         if collided_coins:
             for coin in collided_coins:
-                self.update_score(10)
+                self.update_score(25)
+    
+    def update_distance_score(self):
+        if self.player.sprite.direction.y < 20:
+            start_location = 0
+            player_location = self.player.sprite.rect.centerx
+            end_location = self.goal.sprite.rect.centerx
+            total_distance = end_location - start_location
+            distance_remaining = total_distance - player_location
+            distance_gained = total_distance - distance_remaining
+            score = math.trunc(distance_gained / 64)
+            if self.old_distance_remaining == 0:
+                self.old_distance_remaining = distance_remaining
+                self.update_score(score)
+            elif distance_remaining < self.old_distance_remaining:
+                distance_gained = self.old_distance_remaining - distance_remaining
+                score = math.trunc(distance_gained / 64)
+                self.update_score(score)
+                self.old_distance_remaining = distance_remaining
+            elif distance_remaining > self.old_distance_remaining:
+                distance_gained = self.old_distance_remaining - distance_remaining
+                score = math.trunc(distance_gained / 64)
+                self.update_score(score)
+                self.old_distance_remaining = distance_remaining
 
     def run(self, action):
         #run level / draw level terrain
@@ -243,6 +268,7 @@ class Level:
         
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
+        #self.update_distance_score()
         
         #display player
         self.player.draw(self.display_surface)
