@@ -126,7 +126,7 @@ class Level:
     def vertical_movement_collision(self):
         player = self.player.sprite
         player.apply_gravity()
-        solid_sprites = self.terrain_sprites.sprites() + self.pig_sprites.sprites()
+        solid_sprites = self.terrain_sprites.sprites()
         
         for sprite in solid_sprites:
             if sprite.rect.colliderect(player.rect):
@@ -140,11 +140,50 @@ class Level:
                     player.on_ceiling = True
         
         #check if player is falling or jumping
-        if player.on_ground and player.direction.y < 0 or player.direction.y > 1:
+        if player.on_ground and player.direction.y < 0 or player.direction.y > 1.5:
             player.on_ground = False
         #check if player is falling
         if player.on_ceiling and player.direction.y > 0:
             player.on_ceiling = False
+
+    def platform_movement_collision(self):
+            player = self.player.sprite
+            platform_sprites = self.pig_sprites.sprites()
+
+            for sprite in platform_sprites:
+                # #check x collision
+                # if sprite.rect.colliderect(player.rect):
+                #     if player.direction.x < 0:
+                #         player.rect.left = sprite.rect.right
+                #         player.on_left = True
+                #         self.current_x = player.rect.left
+                #     elif player.direction.x > 0:
+                #         player.rect.right = sprite.rect.left
+                #         player.on_right = True
+                #         self.current_x = player.rect.right
+                # if player.on_left and (player.rect.left < self.current_x or player.direction.x >= 0):
+                #     player.on_left = False
+                # if player.on_right and (player.rect.right > self.current_x or player.direction.x <= 0):
+                #     player.on_right = False
+                
+                #check y collision
+                if sprite.rect.colliderect(player.rect):
+                    if player.direction.y > 0:
+                        player.rect.bottom = sprite.rect.top
+                        player.direction.y = sprite.speed
+                        player.on_platform = True
+                    elif player.direction.y < 0:
+                        player.rect.top = sprite.rect.bottom
+                        player.direction.y = 0
+                        player.on_ceiling = True
+                #check if player is falling or jumping
+                if player.on_platform and player.direction.y < -1.5 or (player.direction.y > sprite.speed + 2):
+                    player.on_platform = False
+                #check if player is falling
+                if player.on_ceiling and player.direction.y > 0:
+                    player.on_ceiling = False
+                
+                
 
     def pig_collision_reverse(self):
         for pig in self.pig_sprites.sprites():
@@ -194,6 +233,7 @@ class Level:
         self.scroll_x()
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
+        self.platform_movement_collision()
         
         #display player
         self.player.draw(self.display_surface)

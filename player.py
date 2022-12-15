@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.on_ceiling = False
         self.on_left = False
         self.on_right = False
+        self.on_platform = False
 
     def import_character_assets(self):
         character_path = 'assets/character/'
@@ -56,6 +57,12 @@ class Player(pygame.sprite.Sprite):
             self.rect = self.image.get_rect(bottomleft = self.rect.bottomleft)
         elif self.on_ground:
             self.rect = self.image.get_rect(midbottom = self.rect.midbottom)
+        elif self.on_platform and self.on_right:
+            self.rect = self.image.get_rect(bottomright = self.rect.bottomright)
+        elif self.on_platform and self.on_left:
+            self.rect = self.image.get_rect(bottomleft = self.rect.bottomleft)
+        elif self.on_platform:
+            self.rect = self.image.get_rect(midbottom = self.rect.midbottom)
         elif self.on_ceiling and self.on_right:
             self.rect = self.image.get_rect(topright = self.rect.topright)
         elif self.on_ceiling and self.on_left:
@@ -76,13 +83,13 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction.x = 0
 
-        if keys[pygame.K_SPACE] and self.on_ground:
+        if keys[pygame.K_SPACE] and (self.on_ground or self.on_platform):
             self.jump()
 
     def get_state(self):
         if self.direction.y < 0:
             self.state = 'jump'
-        elif self.direction.y > 1:
+        elif self.direction.y > 1.5:
             self.state = 'fall'
         else:
             if self.direction.x != 0:

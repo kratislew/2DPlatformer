@@ -91,7 +91,7 @@ class Overworld:
         if self.moving and self.move_direction:
             self.player_icon.sprite.pos += self.move_direction * self.speed
             target_node = self.nodes.sprites()[self.current_level]
-            if target_node.detection_zone.collidepoint(self.icon.sprite.pos):
+            if target_node.detection_zone.collidepoint(self.player_icon.sprite.pos):
                 self.moving = False
                 self.move_direction = pygame.math.Vector2(0,0)
 
